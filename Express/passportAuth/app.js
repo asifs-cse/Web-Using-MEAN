@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require('cors');
 const ejs = require('ejs');
 const app = express();
+require("../config/database");
 
 app.set("view engine", "ejs");
 app.use(cors());
