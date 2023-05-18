@@ -1,8 +1,9 @@
 const express = require("express");
+const app = express();
 const cors = require('cors');
 const ejs = require('ejs');
-const app = express();
-require("../config/database");
+const userModel = require("./models/user.model");
+require("./config/database");
 
 app.set("view engine", "ejs");
 app.use(cors());
@@ -20,9 +21,15 @@ app.get("/register",(req, res)=>{
 });
 
 //register : post
-app.post("/register",(req, res)=>{
+app.post("/register",async (req, res)=>{
     try {
-        res.status(201).send("user is created");
+        const user = await userModel.findOne({username: req.body.username});
+        if(user){
+            return res.status(400).send("user is already created");
+        }
+        const newUser = new userModel(req.body);
+        await newUser.save();
+        res.status(201).redirect("/login");
     } catch (error) {
         res.status(500).send(error.message);
     }
@@ -49,6 +56,8 @@ app.get("/profile",(req, res)=>{
 //logout route
 app.get("/logout", (req, res)=>{
     res.redirect("/");
-})
+});
+
+
 
 module.exports = app;
