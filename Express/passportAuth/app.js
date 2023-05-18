@@ -5,6 +5,10 @@ const ejs = require('ejs');
 const userModel = require("./models/user.model");
 require("./config/database");
 
+//password encryption
+const bcrypt = require('bcrypt');
+const saltRounds =10;
+
 app.set("view engine", "ejs");
 app.use(cors());
 app.use(express.urlencoded({ extended: true}));
@@ -26,10 +30,16 @@ app.post("/register",async (req, res)=>{
         const user = await userModel.findOne({username: req.body.username});
         if(user){
             return res.status(400).send("user is already created");
+        }else{
+            bcrypt.hash(req.body.password,  saltRounds,async (err, hash)=>{
+                const newUser = new userModel({
+                    username: req.body.username,
+                    password: hash
+                });
+                await newUser.save();
+                res.status(201).redirect("/login");
+            })
         }
-        const newUser = new userModel(req.body);
-        await newUser.save();
-        res.status(201).redirect("/login");
     } catch (error) {
         res.status(500).send(error.message);
     }
