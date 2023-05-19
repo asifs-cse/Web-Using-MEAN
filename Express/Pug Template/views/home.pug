@@ -3,6 +3,9 @@ html
     head
         title #{name}
     body 
+        include ./layout/header.pug
         p this is my first paragraph
-        h1 this is my firt heade
         h3 #{url}
+        a(href="/data") go data
+
+        include ./layout/footer.pug

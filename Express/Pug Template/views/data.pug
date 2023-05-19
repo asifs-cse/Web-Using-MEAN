@@ -3,9 +3,13 @@ html
     head
         title #{title}
     body 
+        include ./layout/header.pug
         p This is my first paragraph
-        h1 This is my firt heade
+        h1 This is my first heade
         if(users)
             h3 My name is = #{users.name} and my age is = #{users.age}
         else 
             h3 User not found!
+        a(href="/") go home
+
+        include ./layout/footer
